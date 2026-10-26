@@ -1,58 +1,22 @@
-// server ko create karna 
 const express = require ("express")
-
+const noteModel = require ("./models/note.model")
 
 const app = express()
 app.use(express.json())
 
-const notes = []
+app.post("/notes", async (req, res) => {
 
-
-//POST /notes
-app.post("/notes", (req , res) => {
-    notes.push(req.body)
-
+    const data = req.body //title , description
+    
+    await noteModel.create({
+        title: data.title,
+        description: data.description
+    })
     res.status(201).json({
-        message:" note created successfully"
-    })
-
-})
-
-
-//GET /notes
-app.get('/notes', (req, res) =>{
-
-    res.status(200).json({
-        message:"note fetched successfully",
-        notes: notes
+        message: "Note created"
     })
 })
 
 
-//DELETE /notes/4
-app.delete('/notes/:index', (req, res)=>{
-   const index = req.params.index
-
-   delete notes [index]
-
-   res.status(200).json({
-    message:"note deleted successfully"
-   })
-})
-
-
-//PATCH /notes
-app.patch('/notes/:index',(req, res) =>{
-    
-    const index = req.params.index
-    const description = req.body.description
-    
-    notes[ index ].description = description
-
-
-    res.status(200).json({
-        message: "note updated successfully"
-    })
-})
 
 module.exports = app
